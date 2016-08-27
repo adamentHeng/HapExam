@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hap.core.salesorder.mapper.AllTableMapper">
+	
+	<select id="selectByCondition" parameterType="hap.core.salesorder.dto.SelectVo" resultType="hap.core.salesorder.dto.SelectVo">
+		select head.HEADER_ID headerId,head.ORDER_NUMBER orderNumber,
+				com.COMPANY_NAME companyName,
+				cus.CUSTOMER_NAME customerName,
+				head.ORDER_DATE orderDate,
+				head.ORDER_STATUS orderStatus,
+				line.UNIT_SELLING_PRICE*line.ORDERD_QUANTITY price
+				from hap_om_order_headers head, hap_om_order_lines line, hap_ar_customers cus, hap_org_companys com, hap_inv_inventory_items item
+				where head.COMPANY_ID = com.COMPANY_ID and head.CUSTOMER_ID = cus.CUSTOMER_ID 
+				and line.HEADER_ID = head.HEADER_ID and line.INVENTORY_ITEM_ID = item.INVENTORY_ITEM_ID
+				<if test="companyId!=null">
+            		AND com.company_id = #{companyId}
+        		</if>
+        		<if test="customerId!=null">
+            		AND cus.customer_id = #{customerId}
+        		</if>
+        		<if test="orderNumber!=null">
+            		AND head.order_number = #{orderNumber}
+        		</if>
+        		<if test="inventoryItemId!=null">
+            		AND item.inventory_item_id = #{inventoryItemId}
+        		</if>
+        		<if test="orderStatus!=null">
+            		AND head.order_status = #{orderStatus}
+        		</if>     		
+	</select>
+</mapper>
